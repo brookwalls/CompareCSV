@@ -1,0 +1,1 @@
+This file compares CSV files. It return when there is a ball in either file with no matching ball in the other file. Also, when a signal or mode does not match its intented mode or signal. 
