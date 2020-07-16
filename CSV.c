@@ -1,4 +1,3 @@
-#include "dbg.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,24 +6,24 @@
 #define X 312
 #define Y 350
 
-// this function will make the value being compare have the same format
-				
+// this function will deal with format and special cases
 void format_string(char []);
 
 int main(void)
 {
-	// declaring file called signal
+	// declare file signal
 	FILE * signal;
 	
-	// declaring file called mode
+	// declare file mode
 	FILE * mode;
 	
+	// print CSV File Report
 	printf("CSV File Report:\n");
 	
-	// opened signal file and set it to signal
+	// open interceptor file and set it to signal
 	signal = fopen("interceptor-pin.csv", "rw");
 	
-	// if opening the signal file didn't work 
+	// if opening the interceptor file did not work 
 	if (!signal)
 	{
 		
@@ -36,19 +35,10 @@ int main(void)
 		
 	}
 	
-	else
-	{
-		
-		// signal file opened correctly 
-		//printf("Signal file was opened!\n");
-		
-	}
-	
-	
-	// opened mode file and set it to mode
+	// opened target file and set it to mode
 	mode = fopen("target-pin-edit.csv", "rw");
 	
-	// if opening the mode file didn't work 
+	// if opening the target file did not work 
 	if (!mode)
 	{
 		
@@ -60,309 +50,284 @@ int main(void)
 		
 	}
 	
-	else
-	{
-		
-		// mode file opened correctly
-		//printf("Mode file was opened!\n");
-		
-	}
-	
-	// saved signal file to an array
+	// declare char string signal_line 
 	char signal_line[X][Y];
 	
-	// saved mode file to an array
+	// declare char string mode_line
 	char mode_line[X][Y];
 	
-	// used to count total number of lines in the file
+	// declare int k and initialize to zero
 	int k = 0;
 	
-	// total number of lines in the signal file
+	// declare int signal_total and initialize to zero 
 	int signal_total = 0;
 	
-	// total number of lines in the mode file
+	// declare int mode_total and initialize to zero
 	int mode_total = 0;
 	
-	// goes line by line, counts how many lines have imformation
+	// goes line by line in the signal file
 	while(fgets(signal_line[k], X, signal))
 	{
+		// keeps count of how many lines are in the signal file
 		k++;
 	}
 	
-	// saves total number of lines to 313
+	// saves total number of lines k to signal_total
 	signal_total = k;
 	
 	// sets k back to 0
 	k = 0;
 	
-	// will go throught the mode file and counter how many lines
+	// goes line by line in the mode file
 	while(fgets(mode_line[k], X, mode))
 	{
+		// keeps count of how many lines are in the mode file
 		k++;
 	}
 	
-	// saves total number of lines to 253
+	// saves total number of lines k to mode_total
 	mode_total = k;
 	
-	// counter will be used to keep track of ball matches
+	// declare int counter_ball and initialize to zero 
 	int counter_ball = 0;
 	
-	// counter will be used to keep track of whole matches
+	// declare int counter and initialize to zero 
 	int counter = 0;
 	
-	// used to seperate the information in each line
+	// declare int z and initialize to zero 
 	int z = 0;
 	
-	// the , represents column dividers
+	// declare char delim and initialize to , 
 	char delim[] = ",";
 	
-	// array holds information thats in a line in the mode file
+	// declare string mode_part
 	char * mode_part[5];
 	
-	// temporary holds the information in a line in the mode file
+	// declare string mode_ptr
 	char * mode_ptr;
 	
-	// array holds information thats in a line in the signal file
+	// declare string signal_part
 	char * signal_part[4];
 	
-	// temporary holds the information in a line in the signal file
+	// declare string signal_ptr
 	char * signal_ptr;
 	
-	// hold the information so the orginal stays the same
+	// declare string save_s
 	char *save_s = malloc(60 * sizeof(char));
 	
-	// hold the information so the orginal stays the same
+	// declare string save_m
 	char *save_m = malloc(60 * sizeof(char)); 
   
-  	// length of signal file line
-  	int line_length_s = 0;
+  // declare int line_length_s and initialize to zero
+  int line_length_s = 0;
   
-  	// length of mode file line
-  	int line_length_m = 0;
+  // declare int line_length_m and initialize to zero 
+  int line_length_m = 0;
   	
-  	// flag1 initialised to zero used for comparing both files
-  	int flag1 = 0;
+  // declare int flag1 and initialize to zero 
+  int flag1 = 0;
   	
-  	// flag2 initialised to zero used for comparing both files
-  	int flag2 = 0;
+  // declare int flag2 and initialize to zero 
+  int flag2 = 0;
   	
-  	// flag2 initialised to zero used for comparing both files
-  	int flag3 = 0;
+  // declare int flag3 and initialize to zero 
+  int flag3 = 0;
   	
   /* 
-     It is going throught the signal file line by line and comparing    		 each line to every line in the mode file.
+     The function goes through the signal file line by line and compares   				each line to every line in the mode file.
   */ 
 	for(int i = 2; i < signal_total - 1; i++)
 	{
-		// counter is set back to 0
+		// sets counter back to zero
 		counter = 0;
 		
-		// ball counter is set back to 0
+		// sets counter_ball back to zero
 		counter_ball = 0;
 		
-		// finds the length of signal file line
+		// finds the length of the signal line and saves it to line_length_s
 		line_length_s = (sizeof(signal_line[i]));
 	
-		// save the line information to save_s
+		// saves signal_line[i] to save_s
 		memcpy(save_s, signal_line[i], line_length_s);
 		
-		// save part 0 of the line to signal_ptr
+		// saves part 0 of save_s to signal_ptr
 		signal_ptr = strtok(save_s, delim);
 		
-		// this will set each column of inforation to an array
+		// sets each part of save_s to an array
 		for(int y = 0; y <= 4; y++)
 		{
 			
-			// this sets the signal_ptr information to another array so it can used later
+			// sets signal_ptr to signal_part[y]
 			signal_part[y] = signal_ptr;
 			
-			// sets the origial array to NULL
+			// sets the next part to signal_ptr and the origial to NULL
 			signal_ptr = strtok(NULL, delim);
 		}
 		
 		/*
 		  Values being compared:
-		  signal_part[0] is where the ball name is in interceptor
-		  signal_part[1] is where the signal is in interceptor
-		  mode_part[1] is where the ball name is in target
-		  mode_part[4] is where the mode signal is in target
+		  signal_part[0] is the ball name in interceptor
+		  signal_part[1] is the signal in interceptor
+		  mode_part[1] is the ball name in target
+		  mode_part[4] is the mode signal in target
 		*/
 		
-
 		/* 
-		   go throught the mode file line by line 
-		   trying to find the mode that is equal to the signal 
-		*/
+     The function goes through the mode file and compares every line in the mode file to each line in the signal file.
+  	*/
 		for(int j = 2; j < mode_total ; j++)
 		{
-			
-			// find the length of the mode file line
+			// finds the length of the mode line and saves it to line_length_m
 			line_length_m = (sizeof(mode_line[j]));		
 		
-			// saves the information of mode line to save_m
+			// saves mode_line[j] to save_m
 			memcpy(save_m, mode_line[j], line_length_m);
 			
-			// saves part 0 of mode line to mode_ptr
+			// save part zero of save_m to mode_ptr
 			mode_ptr = strtok(save_m, delim);	
 			
+			// sets each part of save_m to an array
 			for(int x = 0; x <= 5; x++)
 			{
-				// this sets the signal_ptr information to another 					   array so it can used later
+				// sets mode_ptr to mode_part[x]
 				mode_part[x] = mode_ptr;
-			
-				// sets part of the original array to NULL
+				
+				// sets the next part to mode_ptr and the origial to NULL
 				mode_ptr = strtok(NULL, delim);
 			}
 	
-			/* 
-			   this will make sure that none of the values that 					are being compared are NULL
-			*/	
-			if ((signal_part[0] != NULL) && (signal_part[1] != NULL) && (mode_part[1] != NULL) && (mode_part[4] != NULL))
+			 
+			// checks that none of the values being compared are NULL
+			if ((signal_part[0] != NULL) 
+				&& (signal_part[1] != NULL) 
+				&& (mode_part[1] != NULL) 
+				&& (mode_part[4] != NULL))
 			{
-				// this makes the value being compare have the same format
+				// puts the values in the same format and deals with special cases
 				format_string(signal_part[0]);
 				format_string(signal_part[1]);
 				format_string(mode_part[1]);
 				format_string(mode_part[4]);
 				
-				// sets flag1 to 0
+				// sets flag1 back to zero
 				flag1 = 0;
 				
-				// goes through string character by character until null
-				for(int loop = 0; (*((signal_part[0]) + loop) != '\0') || (*((mode_part[1]) + loop) != '\0'); loop++)
+				// goes through string character by character until NULL
+				for(int loop = 0; (signal_part[0][loop] != '\0') || (mode_part[1][loop] != '\0'); loop++)
 				{
-					// makes sure string are the same length
-					if ((*((signal_part[0]) + loop) == '\0') && (*((mode_part[1]) + loop) != '\0')  || (*((signal_part[0]) + loop) != '\0') && (*((mode_part[1]) + loop) == '\0'))
+					
+					// checks that the strings are the same length
+					if ((signal_part[0][loop] == '\0') 
+						&& (mode_part[1][loop] != '\0')  
+						|| (signal_part[0][loop] != '\0') 
+						&& (mode_part[1][loop] == '\0'))
 					{
-						// sets flag1 to 1 which mean not equal
+						// sets flag1 to 1 which mean the strings are not equal
 						flag1 = 1;
 					}
+					
 					// make sure the char values are equal
-					else if(*((signal_part[0]) + loop) != *((mode_part[1]) + loop))
+					else if(signal_part[0][loop] != mode_part[1][loop])
 					{
-						// sets flag1 to 1 which mean not equal
+						// sets flag1 to 1 which mean the strings are not equal
 						flag1 = 1;
-					}
-					
-					
+					}	
 				}
-				// goes in loop if same ball
+				
+				// if the signal and mode ball match
 				if (flag1 == 0)
 				{
+					// increment counter_ball
 					counter_ball++;
-					// sets flag2 to zero
+					
+					// sets flag2 back to zero
 					flag2 = 0;
 					
-					// goes through string by characters until null
-					for(int loop2 = 0; (*((signal_part[1]) + loop2) != '\0') && (*((mode_part[4]) + loop2) != '\0'); loop2++)
+					// goes through string character by character until NULL
+					for(int loop2 = 0; (signal_part[1][loop2] != '\0') && (mode_part[4][loop2] != '\0'); loop2++)
 					{
+						
 						// makes sure char values are equal
-						if(*((signal_part[1]) + loop2) != *((mode_part[4]) + loop2))
+						if(signal_part[1][loop2] != mode_part[4][loop2])
 						{
-							// sets flag2 to 1, not equal
+							// sets flag2 to 1 which means the strings are not equal
 							flag2 = 1;
 						}
 					}
-					// goes in loop if same signal mode 
+					
+					// if the signal and mode match
 					if (flag2 == 0)
 					{
 						// increment counter
 						counter++;	
-						
 					}
+					
 					// signal doesn't match mode
 					else 
 					{
-						// prints out that is was an incomplete match
+						// prints out the incomplete match
 						printf("Ball:%s Signal:%s doesn't match %s Mode:%s\n", signal_part[0], signal_part[1], mode_part[1], mode_part[4]);				
-				
 					}
 					
 				}
 				
-			    // went through mode file and multiple full matches
+				// finished going through the mode file
+				//if (j == (mode_total - 1))
+				
+				
+				
+			
+			  // went through mode file and multiple full matches
 				if ((j == (mode_total - 1)) && (counter >= 2))
 				{
 					printf("Ball:%s Signal:%s found multiple matching modes\n", signal_part[0], signal_part[1]);
-					
 				}
-				
+
 				// went through mode file and multiple ball matches
 				if ((j == (mode_total - 1)) && (counter_ball >= 2) && !(counter >= 2))
 				{
 					printf("Ball:%s Signal:%s found multiple matching balls with differnt modes\n", signal_part[0], signal_part[1]);
-					
 				}
-				
-				// signal only has one matching mode
-				if ((j == (mode_total - 1)) && (counter == 1))
-				{
-					//printf("Ball: %s Signal: %s only found one match! The matching mode was printed out above.\n", signal_part[0], signal_part[1]);
-				}
-				
-				// went through mode file and no matches
-				if ((j == (mode_total - 1)) && (counter == 0) && (counter_ball == 0))
-				{
-					//printf("Ball: %s Signal: %s couldn't find a matching mode!\n", signal_part[0], signal_part[1]);
-					
-				}
-				
 			}
 			
-			// if values are NULL it will return "Hit NULL value."
+			// if values being compared are NULL
 			else
 			{
-				// prints out NULL value found
-			    printf("Hit NULL value.\n");
-				
+				// prints out "Hit NULL value"
+			  printf("Hit NULL value.\n");
 			}
-			
-			// tells you if it finished going through the inner loop
-			if (j == mode_total - 1)
-			{
-				//printf("Went throught innner loop mode!\n");
-			}
-			
-			
 		}
-		
-		// tells you if it finished going through the outter loop
-		if (i == signal_total - 2)
-		{
-			//printf("Went all the way throught outter loop signal!\n");
-		}
-	
 	}
 	
-		//sets flag1 back to zero
-  	flag1 = 0;
+	//sets flag1 back to zero
+  flag1 = 0;
   	
-  	//sets flag2 back to zero
-  	flag2 = 0;
+  //sets flag2 back to zero
+  flag2 = 0;
   	
-  	// skips a line
-		printf("\n");
+  // skips a line
+	printf("\n");
 	
-    // going through next file
-		printf("NEXT FILE\n");
+  // going through next file
+	printf("NEXT FILE\n");
 	
 	// skips a line
 	printf("\n");
 	
-	// initialize d to zero
+	// declare int d and initialize to zero
 	int d = 0;
 	
-	// initialize in to zero
+	// declare int in and initialize to zero
 	int in = 0;
 	
-	// saves the ball name of the onces who have multiple matches
+	// declare string ball_match
 	char * ball_match[X][Y];
 	
-	// saves the signal name of the onces who have multiple matches
+	// declare string signal_match
 	char * signal_match[X][Y];
 	
 	/* 
-        It is going throught the mode file line by line and comparing    		     	each line to every line in the signal file
+     The function goes through the mode file line by line and compares   				each line to every line in the signal file.
   */ 
   for(int i = 2; i < (mode_total); i++)
 	{
@@ -372,19 +337,19 @@ int main(void)
 		//sets counter_ball back to zero
 		counter_ball = 0;
 		
-		// saves mode line information to save_m so it dosen't change the original.
+		// saves mode_line[i] to save_m
 		memcpy(save_m, mode_line[i], line_length_m);
 		
-		// save part one of the mode line information to mode_ptr
+		// save part zero of save_m to mode_ptr
 		mode_ptr = strtok(save_m, delim);
 		
-		// this will set each column of inforation to an array
+		// sets each part of save_m to an array
 		for(int y = 0; y <= 5; y++)
 		{
-			// this sets the signal_ptr information to another array so it can used later
+			// sets mode_ptr to mode_part[y]
 			mode_part[y] = mode_ptr;
 			
-			// sets the origial array to NULL
+			// sets the next part to mode_ptr and the origial to NULL
 			mode_ptr = strtok(NULL, delim);
 		}
 			
@@ -396,39 +361,37 @@ int main(void)
 		  signal_part[1] is where the signal is in interceptor
 		*/
 		
-		
-		
 		/* 
-		   go throught the mode file line by line 
-		   trying to find the mode that is equal to the signal 
-		*/
+     The function goes through the signal file and compares every line in the mode file to each line in the mode file.
+  	*/ 
 		for(int q = 2; q <= signal_total - 1; q++)
 		{
-			
-			// save signal line information to save_s
+			// saves signal_line[q] to save_s
 			memcpy(save_s, signal_line[q], line_length_s);
 			
-			// save signal line information to save_s, double check
+			// saves signal_line[q] to save_s, double check
 			save_s = signal_line[q];
 			
-			// save part zero signal line informationn to signal_ptr
+			// save part zero of save_s to signal_ptr
 			signal_ptr = strtok(save_s, delim);
 			
+			// sets each part of save_s to an array
 			for(int x = 0; x <= 4; x++)
 			{
-				// this sets the signal_ptr information to another 					   array so it can used later
+				// sets signal_ptr to signal_part[x]
 				signal_part[x] = signal_ptr;
 				
-				// sets part of the original array to NULL
+				// sets the next part to signal_ptr and the origial to NULL
 				signal_ptr = strtok(NULL, delim);
 			}
 			
-			/* 
-			   this will make sure that none of the values that 					are being compared are NULL
-			*/	
-			if ((mode_part[1] != NULL) && (mode_part[4] != NULL) && (signal_part[0] != NULL) && (signal_part[1] != NULL))
+			// checks that none of the values being compared are NULL	
+			if ((mode_part[1] != NULL) 
+				&& (mode_part[4] != NULL) 
+				&& (signal_part[0] != NULL) 
+				&& (signal_part[1] != NULL))
 			{
-				// this makes the value being compare have the same format
+				// puts the values in the same format and deals with special cases
 				format_string(signal_part[0]);
 				format_string(signal_part[1]);
 				format_string(mode_part[1]);
@@ -437,67 +400,73 @@ int main(void)
 				//sets flag1 back to 0
 				flag1 = 0;
 				
-				// goes through string by characters until null
-				for(int loop = 0; (*((signal_part[0]) + loop) != '\0') || (*((mode_part[1]) + loop) != '\0'); loop++)
+				// goes through string character by characters until NULL
+				for(int loop = 0; (signal_part[0][loop] != '\0') || (mode_part[1][loop] != '\0'); loop++)
 				{
 					// makes sure string are the same length
-					if ((*((signal_part[0]) + loop) == '\0') && (*((mode_part[1]) + loop) != '\0')  || (*((signal_part[0]) + loop) != '\0') && (*((mode_part[1]) + loop) == '\0'))
+					if ((signal_part[0][loop] == '\0') 
+						&& (mode_part[1][loop] != '\0')  
+						|| (signal_part[0][loop] != '\0') 
+						&& (mode_part[1][loop] == '\0'))
 					{
-						// sets flag1 to 1 which mean not equal
+						// sets flag1 to 1 which means the strings are not equal
 						flag1 = 1;
 					}
-					if(*((signal_part[0]) + loop) != *((mode_part[1]) + loop))
+					if(signal_part[0][loop] != mode_part[1][loop])
 					{
-							// sets flag1 to 1 which mean not equal
+							// sets flag1 to 1 which means the strings are not equal
 							flag1 = 1;
 					}
-					// makes sure char values match
 					
 				}
-				// goes in loop if same ball
+				
+				// if the signal and mode ball match
 				if (flag1 == 0)
 				{
 					
-					// increments ball counter
+					// increments ball_counter
 					counter_ball++;
-					//sets flag2 to zero
+					
+					//sets flag2 back to zero
 					flag2 = 0;
 					
-					// goes through string by characters until null
-					for(int loop2 = 0; (*((signal_part[1]) + loop2) != '\0') || (*((mode_part[4]) + loop2) != '\0'); loop2++)
+					// goes through string character by character until NULL
+					for(int loop2 = 0; (signal_part[1][loop2] != '\0') || (mode_part[4][loop2] != '\0'); loop2++)
 					{
-						if ((*((signal_part[1]) + loop2) == '\0') && (*((mode_part[4]) + loop2) != '\0')  || (*((signal_part[1]) + loop2) != '\0') && (*((mode_part[4]) + loop2) == '\0'))
+						if ((signal_part[1][loop2] == '\0') 
+							&& (mode_part[4][loop2] != '\0')  
+							|| (signal_part[1][loop2] != '\0') 
+							&& (mode_part[4][loop2] == '\0'))
 						{
-							// sets flag1 to 1 which mean not equal
+							// sets flag1 to 1 which means the strings are not equal
 							flag2 = 1;
 						}
+						
 						// check if char value match
-						if(*((signal_part[1]) + loop2) != *((mode_part[4]) + loop2))
+						if(signal_part[1][loop2] != mode_part[4][loop2])
 						{
-							// sets flag1 to 1 which mean not equal
+							// sets flag1 to 1 which means the strings are not equal
 							flag2 = 1;
 						}
 					}
 					
-					// goes in loop if mode signal match
+					// goes in loop if mode and signal match
 					if (flag2 == 0)
 					{
 			
-						// increments ball counter
+						// increments counter
 						counter++;
 					}
 					
 					// signal doesn't match mode
 					else 
-					{
-						
+					{	
 						printf("Ball:%s Mode:%s doesn't match %s Signal:%s\n", mode_part[1], mode_part[4], signal_part[0], signal_part[1]);				
-						
 					}
 				
 				}
 				
-				// sets flag3 to zero
+				// sets flag3 back to zero
 				flag3 = 0;
 			 
 			  // went through signal file and check if actual multiple matches
@@ -513,16 +482,19 @@ int main(void)
 						{
 							for(int b = 1; b < a; b++)
 							{
-								for(int loop3 = 0; (*(*(ball_match[a]) + loop3) != '\0') || (*(*(ball_match[b]) + loop3) != '\0'); loop3++)
+								for(int loop3 = 0; (*ball_match[a][loop3] != '\0') || (*ball_match[b][loop3] != '\0'); loop3++)
 								{
 									// makes sure string are the same length
-									if ((*(*(ball_match[a]) + loop3) == '\0') && (*(*(ball_match[b]) + loop3) != '\0')  || (*(*(ball_match[a]) + loop3) != '\0') && (*(*(ball_match[b]) + loop3) == '\0'))
+									if ((*ball_match[a][loop3] == '\0') 
+										&& (*ball_match[b][loop3] != '\0')  
+										|| (*ball_match[a][loop3] != '\0') 
+										&& (*ball_match[b][loop3] == '\0'))
 									{
-										// sets flag1 to 1 which mean not equal
+										// sets flag1 to 1 which mean the strings are not equal
 										flag3 = 1;
 									}
 									// makes sure char values match
-									else if(*(*(ball_match[a]) + loop3) != *(*(ball_match[b]) + loop3))
+									else if(ball_match[a][loop3] != ball_match[b][loop3])
 									{
 										// sets flag1 to 1 which mean not equal
 										flag3 = 1;
@@ -547,16 +519,15 @@ int main(void)
 				in++;	
 				}
 				
-				
 				if ((q == (signal_total - 1)) && (counter_ball >= 2) && (counter == 0))
 				{
 					printf("Ball:%s Mode:%s found matching balls with different signals!\n", mode_part[1], mode_part[4]);
 				}
 				
-				// went through mode file and no matches
+				// mode ball couldn't find a matching ball in the signal file
 				if ((q == (signal_total - 1)) && (counter == 0) && (counter_ball == 0))
 				{
-					if ((*(mode_part[1]) != '\0') && (*(mode_part[4]) != '\0'))
+					if ((*mode_part[1] != '\0') && (*mode_part[4] != '\0'))
 					{
 						printf("Ball:%s Mode:%s couldn't find a matching ball or signal!\n", mode_part[1], mode_part[4]);
 					}
@@ -564,45 +535,24 @@ int main(void)
 				
 			}
 			
-			// if values are NULL it will move on to the next signal
+			// if values are NULL
 			else
 			{
-				// prints out NULL value found
+				// prints out Hit NULL value
 			    printf("Hit NULL value.\n");
 				
 			}
-			
-			// tells you if it finished going through the inner loop
-			if (q == signal_total - 1)
-			{
-				
-				//printf("Went throught innner loop mode!\n");
-				
-			}
-			
-			
 		}
-		
-		// tells you if it finished going through the outter loop
-		if (i == mode_total - 1)
-		{
-			
-			//printf("Went all the way throught outter loop mode!\n");
-			
-		}
-	
 	}
-	
-	
 }
 
-// makes sure the value being compare are in the same format
+// puts the values in the same format and deals with special cases
 void format_string(char s[])
 {
-	// initialised c to zero
+	// declare c and initialised c to zero
 	int c = 0;
 	
-	// initialised line to _
+	// declare line and initialised line to _
 	char line = '_';
 	
 	// stays in loop untill char is black
@@ -616,7 +566,9 @@ void format_string(char s[])
 			
 		}
 		// check to see that char is not a letter or number
-		if(!(s[c] >= 'A' && s[c] <= 'Z') && !(isdigit(s[c])))
+		if(!(s[c] >= 'A' 
+			&& s[c] <= 'Z') 
+			&& !(isdigit(s[c])))
 		{	
 			// checks to see if char is [
 			if(s[c] == '[');
@@ -625,7 +577,7 @@ void format_string(char s[])
 				s[c] = line;
 				
 			}
-			// check to see if the current char is _ and the next one is N
+			// if the end of the current string is _N
 			if(((s[c] == '_') && (s[c + 1]) == 'N'))
 			{
 				// changes the current char to N
@@ -635,8 +587,11 @@ void format_string(char s[])
 				s[c + 1] = '\0';
 			}
 		}
-		// check to see that char is not a letter number or _
-		if(!(s[c] >= 'A' && s[c] <= 'Z') && !(s[c] == line) && !(isdigit(s[c])))
+		// if the end of the current string is AZ
+		if(!(s[c] >= 'A' 
+			&& s[c] <= 'Z') 
+			&& !(s[c] == line) 
+			&& !(isdigit(s[c])))
 		{
 			// check to see that char is ]
 			if(s[c] == ']');
@@ -646,308 +601,474 @@ void format_string(char s[])
 			}
 		}
 		
-		// check to see if the current char is 0 and the next one is N
+		// if the end of the current string is 0N
 		if((s[c] == '0') && (s[c + 1] == 'N'))
 		{
 			// changes 0 to N
 			s[c] = 'N';
+			
 			// changes N to 0
 			s[c + 1] = '0';
 			
 		}
 		
-		// check to see if the current char is 0 and the next one is n
+		// if the end of the current string is 0n
 		if((s[c] == '0') && (s[c + 1] == 'n'))
 		{
 			// changes 0 to N
 			s[c] = 'N';
+			
 			// changes n to 0
 			s[c + 1] = '0';
 			
 		}
 		
-		// check to see if the current char is 1 and the next one is N
+		// if the end of the current string is 1N
 		if((s[c] == '1') && (s[c + 1] == 'N'))
 		{
 			// changes 1 to N
 			s[c] = 'N';
+			
 			// changes N to 1
 			s[c + 1] = '1';
-			
 		}
 		
-		// check to see if the current char is 1 and the next one is _ and the one after is N
-		if((s[c] == '1') && (s[c + 1] == '_') && (s[c + 2] == 'N'))
+		// if the end of the current string is 1_N
+		if((s[c] == '1') 
+			&& (s[c + 1] == '_') 
+			&& (s[c + 2] == 'N'))
 		{
 			// changes 1 to N
 			s[c] = 'N';
+			
 			// changes _ to 1
 			s[c + 1] = '1';
+			
 			// changes N to blank
 			s[c + 2] = '\0';
-			
 		}
 		
-		// check to see if the current char is 0 and the next one is _ and the one after is N
-		if((s[c] == '0') && (s[c + 1] == '_') && (s[c + 2] == 'N'))
+		// if the end of the current string is 0_N
+		if((s[c] == '0') 
+			&& (s[c + 1] == '_') 
+			&& (s[c + 2] == 'N'))
 		{
 			// changes 0 to n
 			s[c] = 'N';
+			
 			// changes _ to 0
 			s[c + 1] = '0';
+			
 			// changes N to blank
 			s[c + 2] = '\0';
-			
 		}
-		if((s[c] == '_') && (s[c + 1] == 'T') && (s[c + 2] == 'M') && (s[c + 3] == 'S') && (s[c + 4] == '\0'))
+		
+		// if the end of the current string is _TMS 
+		if((s[c] == '_') 
+			&& (s[c + 1] == 'T') 
+			&& (s[c + 2] == 'M') 
+			&& (s[c + 3] == 'S') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change to T
 			s[0] = 'T';
+			
 			// change to M
 			s[1] = 'M';
+			
 			// change to S
 			s[2] = 'S';
+			
 			// change to blank
 			s[3] = '\0';
+			
 			// change to blank
 			s[4] = '\0';
+			
 			// change to blank
 			s[c] = '\0'; 
+			
 			// change to blank
 			s[c + 1] = '\0';
+			
 			// change to blank
 			s[c + 2] = '\0'; 
+			
 			// change to blank
 			s[c + 3] = '\0'; 
+			
 			// change to blank
 			s[c + 4] = '\0'; 
 		}
-		
-		if((s[c] == '_') && (s[c + 1] == 'T') && (s[c + 2] == 'D') && (s[c + 3] == 'I') && (s[c + 4] == '\0'))
+		// if the end of the current string is _TDI
+		if((s[c] == '_') 
+			&& (s[c + 1] == 'T') 
+			&& (s[c + 2] == 'D') 
+			&& (s[c + 3] == 'I') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change to T
 			s[0] = 'T';
+			
 			// change to M
 			s[1] = 'D';
+			
 			// change to S
 			s[2] = 'I';
+			
 			// change to blank
 			s[3] = '\0';
+			
 			// change to blank
 			s[4] = '\0';
+			
 			// change to blank
 			s[c] = '\0'; 
+			
 			// change to blank
 			s[c + 1] = '\0';
+			
 			// change to blank
 			s[c + 2] = '\0'; 
+			
 			// change to blank
 			s[c + 3] = '\0'; 
+			
 			// change to blank
 			s[c + 4] = '\0'; 
 		}
 		
-		if((s[c] == '_') && (s[c + 1] == 'T') && (s[c + 2] == 'D') && (s[c + 3] == 'O') && (s[c + 4] == '\0'))
+		// if the end of the current string is _TDO
+		if((s[c] == '_') 
+			&& (s[c + 1] == 'T') 
+			&& (s[c + 2] == 'D') 
+			&& (s[c + 3] == 'O') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change to T
 			s[0] = 'T';
+			
 			// change to M
 			s[1] = 'D';
+			
 			// change to S
 			s[2] = 'O';
+			
 			// change to blank
 			s[3] = '\0';
+			
 			// change to blank
 			s[4] = '\0';
+			
 			// change to blank
 			s[c] = '\0'; 
+			
 			// change to blank
 			s[c + 1] = '\0';
+			
 			// change to blank
 			s[c + 2] = '\0'; 
+			
 			// change to blank
 			s[c + 3] = '\0'; 
+			
 			// change to blank
 			s[c + 4] = '\0'; 
 		}
 		
-		if((s[c] == 'N') && (s[c + 1] == 'N') && (s[c + 2] == 'M') && (s[c + 3] == 'I') && (s[c + 4] == '\0'))
+		// if the end of the current string is NNMI
+		if((s[c] == 'N') 
+			&& (s[c + 1] == 'N') 
+			&& (s[c + 2] == 'M') 
+			&& (s[c + 3] == 'I') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change to T
 			s[c] = 'A';
+			
 			// change to M
 			s[c + 1] = 'M';
+			
 			// change to S
 			s[c + 2] = '4';
+			
 			// change to blank
 			s[c + 3] = '3';
+			
 			// change to blank
 			s[c + 4] = '7';
+			
 			// change to blank
 			s[c + 5] = 'X';
+			
 			// change to blank
 			s[c + 6] = '_';
+			
 			// change to blank
 			s[c + 7] = 'N'; 
+			
 			// change to blank
 			s[c + 8] = 'M';
+			
 			// change to blank
 			s[c + 9] = 'I'; 
+			
 			// change to blank
 			s[c + 10] = 'N';  
 		}
 		
-		if((s[c] == '_') && (s[c + 1] == 'T') && (s[c + 2] == 'C') && (s[c + 3] == 'K') && (s[c + 4] == '\0'))
+		// if the end of the current string is _TCK
+		if((s[c] == '_') 
+			&& (s[c + 1] == 'T') 
+			&& (s[c + 2] == 'C') 
+			&& (s[c + 3] == 'K') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change to T
 			s[0] = 'T';
+			
 			// change to M
 			s[1] = 'C';
+			
 			// change to S
 			s[2] = 'K';
+			
 			// change to blank
 			s[3] = '\0';
+			
 			// change to blank
 			s[4] = '\0';
+			
 			// change _ to blank
 			s[c] = '\0'; 
+			
 			// change T to blank
 			s[c + 1] = '\0';
+			
 			// change C to blank
 			s[c + 2] = '\0'; 
+			
 			// change K to blank
 			s[c + 3] = '\0'; 
-	
 		}
 		
-		if((s[c] == 'A') && (s[c + 1] == 'T') && (s[c + 2] == 'A') && (s[c + 3] == '_') && (s[c + 4] == 'P') && (s[c + 5] == '\0'))
+		// if the end of the current string is ATA_P
+		if((s[c] == 'A') 
+			&& (s[c + 1] == 'T') 
+			&& (s[c + 2] == 'A') 
+			&& (s[c + 3] == '_') 
+			&& (s[c + 4] == 'P') 
+			&& (s[c + 5] == '\0'))
 		{
 			// change A to P
 			s[c] = 'P';
+			
 			// change to blank
 			s[c + 1] = '\0';
+			
 			// change to blank
 			s[c + 2] = '\0';
+			
 			// change to blank
 			s[c + 3] = '\0';
+			
 			// change to blank
 			s[c + 4] = '\0';
 			
 		}
 		
-		if((s[c] == 'L') && (s[c + 1] == 'K') && (s[c + 2] == '_') && (s[c + 3] == 'P') && (s[c + 4] == '\0'))
+		// if the end of the current string is LK_P
+		if((s[c] == 'L') 
+			&& (s[c + 1] == 'K') 
+			&& (s[c + 2] == '_') 
+			&& (s[c + 3] == 'P') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change L to K
 			s[c] = 'K';
+			
 			// change K to blank
 			s[c + 1] = '\0';
+			
 			// change _ to blank
 			s[c + 2] = '\0';
+			
 			// change P to blank
 			s[c + 3] = '\0';
 		}
-		// ask if same
-		if((s[c] == '1') && (s[c + 1] == '_') && (s[c + 2] == 'D') && (s[c + 3] == 'P') && (s[c + 4] == '\0'))
+		
+		// if the end of the current string is 1_DP
+		if((s[c] == '1') 
+			&& (s[c + 1] == '_') 
+			&& (s[c + 2] == 'D') 
+			&& (s[c + 3] == 'P') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change D to P
 			s[c + 2] = 'P';
+			
 			// change P to blank
 			s[c + 3] = '\0';
 		}
 		
-		if((s[c] == '0') && (s[c + 1] == '_') && (s[c + 2] == 'P') && (s[c + 3] == '\0'))
+		// if the end of the current string is 0_P
+		if((s[c] == '0') 
+			&& (s[c + 1] == '_') 
+			&& (s[c + 2] == 'P') 
+			&& (s[c + 3] == '\0'))
 		{
-		
 			// change _ to blank
 			s[c + 1] = '\0';
+			
 			// change P to blank
 			s[c + 2] = '\0'; 
-			
 		}
 		
-		if((s[c] == 'D') && (s[c + 1] == 'T') && (s[c + 2] == '0') && (s[c + 3] == '\0'))
+		// if the end of the current string is DT0
+		if((s[c] == 'D') 
+			&& (s[c + 1] == 'T') 
+			&& (s[c + 2] == '0') 
+			&& (s[c + 3] == '\0'))
 		{
 			// change 0 to blank
 			s[c + 2] = '\0';
 		}
 		
-		if((s[c] == 'R') && (s[c + 1] == 'T') && (s[c + 2] == 'S') && (s[c + 3] == '\0'))
+		// if the end of the current string is RTS
+		if((s[c] == 'R') 
+			&& (s[c + 1] == 'T') 
+			&& (s[c + 2] == 'S') 
+			&& (s[c + 3] == '\0'))
 		{
 			// change blank to N
 			s[c + 3] = 'N';
+			
 			// change to blank
 			s[c + 4] = '\0';
 		}
 		
-		if((s[c] == '_') && (s[c + 1] == 'C') && (s[c + 2] == 'L') && (s[c + 3] == 'K') && (s[c + 4] == '_') && (s[c + 5] == 'N') && (s[c + 6] == '\0'))
+		// if the end of the current string is _CLK_N
+		if((s[c] == '_') 
+			&& (s[c + 1] == 'C') 
+			&& (s[c + 2] == 'L') 
+			&& (s[c + 3] == 'K') 
+			&& (s[c + 4] == '_') 
+			&& (s[c + 5] == 'N') 
+			&& (s[c + 6] == '\0'))
 		{
 			// change _ to N
 			s[c] = 'N';
+			
 			// change C to blank
 			s[c + 1] = '\0';
+			
 			// change L to blank
 			s[c + 2] = '\0';
+			
 			// change K to blank
 			s[c + 3] = '\0';
+			
 			// change _ to blank
 			s[c + 4] = '\0';
+			
 			// change N to blank
 			s[c + 5] = '\0';
 		}
 		
-		if((s[c] == 'N') && (s[c + 1] == 'T') && (s[c + 2] == 'R') && (s[c + 3] == 'S') && (s[c + 4] == 'T') && (s[c + 5] == '\0'))
+		// if the end of the current string is NTRST
+		if((s[c] == 'N') 
+			&& (s[c + 1] == 'T') 
+			&& (s[c + 2] == 'R') 
+			&& (s[c + 3] == 'S') 
+			&& (s[c + 4] == 'T') 
+			&& (s[c + 5] == '\0'))
 		{
 			// change N to X
 			s[c] = 'X';
+			
 			// change T to J
 			s[c + 1] = 'J';
+			
 			// change R to T
 			s[c + 2] = 'T';
+			
 			// change S to A
 			s[c + 3] = 'A';
+			
 			// change T to G
 			s[c + 4] = 'G';
+			
 			// change blank to _
 			s[c + 5] = '_';
+			
 			// change blank to R
 			s[c + 6] = 'R';
+			
 			// change blank to S
 			s[c + 7] = 'S';
+			
 			// change blank to T
 			s[c + 8] = 'T';
+			
 			// change blank to N
 			s[c + 9] = 'N';
 	
 		}
-		if((s[c] == '_') && (s[c + 1] == 'C') && (s[c + 2] == 'L') && (s[c + 3] == 'K') && (s[c + 4] == '_') && (s[c + 5] == 'N') && (s[c + 6] == '\0'))
+		
+		// if the end of the current string is _CLK_N
+		if((s[c] == '_') 
+			&& (s[c + 1] == 'C') 
+			&& (s[c + 2] == 'L') 
+			&& (s[c + 3] == 'K') 
+			&& (s[c + 4] == '_') 
+			&& (s[c + 5] == 'N') 
+			&& (s[c + 6] == '\0'))
 		{
 			// change _ to N
 			s[c] = 'N';
+			
 			// change C to blank
 			s[c + 1] = '\0';
+			
 			// change L to blank
 			s[c + 2] = '\0';
+			
 			// change K to blank
 			s[c + 3] = '\0';
+			
 			// change _ to blank
 			s[c + 4] = '\0';
+			
 			// change N to blank
 			s[c + 5] = '\0';
 		}
 		
-		if((s[c] == '_') && (s[c + 1] == 'n') && (s[c + 2] == 'c') && (s[c + 3] == 'k') && (s[c + 4] == '\0'))
+		// if the end of the current string is _nck
+		if((s[c] == '_') 
+			&& (s[c + 1] == 'n') 
+			&& (s[c + 2] == 'c') 
+			&& (s[c + 3] == 'k') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change _ to N
 			s[c] = 'N';
+			
 			// change n to blank
 			s[c + 1] = '\0';
+			
 			// change c to blank
 			s[c + 2] = '\0';
+			
 			// change k to blank
 			s[c + 3] = '\0';
 		}
 		
-		if((s[c] == 'S') && (s[c + 1] == '1') && (s[c + 2] == '_') && (s[c + 3] == 'P') && (s[c + 4] == '\0'))
+		// if the end of the current string is S1_P
+		if((s[c] == 'S') 
+			&& (s[c + 1] == '1') 
+			&& (s[c + 2] == '_') 
+			&& (s[c + 3] == 'P') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change _ to blank
 			s[c + 2] = '\0'; 
@@ -955,53 +1076,83 @@ void format_string(char s[])
 			s[c + 3] = '\0'; 
 		}
 		
-		if((s[c] == '1') && (s[c + 1] == '_') && (s[c + 2] == 'D') && (s[c + 3] == 'M') && (s[c + 4] == '\0'))
+		// if the end of the current string is 1_DM
+		if((s[c] == '1') 
+			&& (s[c + 1] == '_') 
+			&& (s[c + 2] == 'D') 
+			&& (s[c + 3] == 'M') 
+			&& (s[c + 4] == '\0'))
 		{
 			// change _ to blank
 			s[c] = 'N'; 
+			
 			// change _ to blank
 			s[c + 1] = '1'; 
+			
 			// change P to blank
 			s[c + 2] = '\0'; 
+			
 			// change P to blank
 			s[c + 3] = '\0'; 
 		}
 		
-		if((s[c] == '2') && (s[c + 1] == '_') && (s[c + 2] == 'C') && (s[c + 3] == 'T') && (s[c + 4] == 'S') && (s[c + 5] == 'N') && (s[c + 6] == '\0'))
+		// if the end of the current string is 2_CTSN
+		if((s[c] == '2') 
+			&& (s[c + 1] == '_') 
+			&& (s[c + 2] == 'C') 
+			&& (s[c + 3] == 'T') 
+			&& (s[c + 4] == 'S') 
+			&& (s[c + 5] == 'N') 
+			&& (s[c + 6] == '\0'))
 		{
 			// change N to blank
 			s[c + 5] = '\0'; 
 		}
-		//ME ME ME ME
-		if((s[c] == 'D') && (s[c + 1] == 'A') && (s[c + 2] == 'T') && (s[c + 3] == 'A') && (s[c + 4] == '_') && (s[c + 5] == 'N') && (s[c + 6] == '\0'))
+		
+		// if the end of the current string is DATA_N
+		if((s[c] == 'D') 
+			&& (s[c + 1] == 'A') 
+			&& (s[c + 2] == 'T') 
+			&& (s[c + 3] == 'A') 
+			&& (s[c + 4] == '_') 
+			&& (s[c + 5] == 'N') 
+			&& (s[c + 6] == '\0'))
 		{
 			// change C to blank
 			s[c + 1] = 'M';
+			
 			// change L to blank
 			s[c + 2] = '\0';
+			
 			// change K to blank
 			s[c + 3] = '\0';
+			
 			// change _ to blank
 			s[c + 4] = '\0';
+			
 			// change N to blank
 			s[c + 5] = '\0';
 		}
 		
-		if((s[c] == 'Z') && (s[c + 1] == 'n') && (s[c + 2] == '\0'))
+		// if the end of the current string is Zn
+		if((s[c] == 'Z') 
+			&& (s[c + 1] == 'n') 
+			&& (s[c + 2] == '\0'))
 		{
 			// change n to blank
 			s[c + 1] = '\0'; 
 		}
+		
+		// if the end of the current string is _
 		if((s[c] == '_') && (s[c + 1] == '\0'))
 		{
 			// changes _ to blank
 			s[c] = '\0';
 			
 		}
+		
 		// increment c
 		c++;
 	}
 	
 }
-
-
